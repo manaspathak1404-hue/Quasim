@@ -3,8 +3,10 @@ Quasim is a low level quantum simulator designed to mimic the features of a quan
 # How to use this project 
 In order to use this project you have to input the number of qubits you want to process and then it checks your system and tell if the desired amount of qubits are possible or not. 
 # Supported devices
-OS:- Windows
+OS:- Windows 
+
 Language :- c++
+
 version:- c++ 17 and higher
 # Future Updates
 As of now the project will get updated to process gates and soon circuits with multi OS compatibility.
