@@ -11,15 +11,21 @@
 #include <stdexcept>
 #include <string>
 #include "Checksystem.h"
-using namespace std;
+#include "StateVector.h"
 
 int main() {
 	Checksystem system;
 	try {
 		system.getsystem();
 		int Qubit = system.ReturnQubit();
+		StateVector state(Qubit);
+		std::cout << "The number of amplitudes are:  " << state.Amplitudes().size() << std::endl;
+		state.Normalized();
+
 	}
-	catch (const  runtime_error& e) {
-		cout << e.what();
+	catch (const  std::runtime_error& e) {
+		std::cout << e.what();
 	}
+
+
 }
