@@ -8,5 +8,7 @@ OS:- Windows
 Language :- c++
 
 version:- c++ 17 and higher
+# Update
+Added State Vector initialization and normalization check.
 # Future Updates
 As of now the project will get updated to process gates and soon circuits with multi OS compatibility.
