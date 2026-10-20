@@ -10,10 +10,10 @@
 #include <cmath>
 #include <stdexcept>
 #include <string>
-using namespace std;
+
 class Checksystem{
 public:
-	string CheckInput();
+	std::string CheckInput();
 	int GetValidQubit();
 	int check();
 	void getsystem();
