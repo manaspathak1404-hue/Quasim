@@ -30,6 +30,7 @@ void StateVector::Ask(){
 		PauliX();
 	}
 	else if(ask == "close"){
+		std::cout << "Copyright[2026][Manas Pathak]" << std::endl;
 		std::exit(0);
 	}
 
