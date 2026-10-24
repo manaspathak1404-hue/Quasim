@@ -71,12 +71,12 @@ int Checksystem::check() {
 			size = ((1ULL << qubit) * sizeof(std::complex<double>)) / Gb;
 		}
 	}
-	std::cout << "The size is " << ((1ULL << qubit) * sizeof(std::complex<double>)) << "bytes";
+	std::cout << "The size is " << ((1ULL << qubit) * sizeof(std::complex<double>)) << "bytes" << std::endl;
 	return qubit;
 }
 
 void Checksystem::getsystem() {
-	std::cout << "Welcome to Quasim version 1.00" << std::endl;
+	std::cout << "Welcome to Quasim version 1.01" << std::endl;
 	SYSTEM_INFO info;
 	GetSystemInfo(&info);
 	DWORD buffersize = 0;
