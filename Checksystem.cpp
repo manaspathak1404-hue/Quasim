@@ -9,7 +9,6 @@ std::string Checksystem::CheckInput() {
 	return input;
 }
 int Checksystem::GetValidQubit() {
-
 	int qubit = 0;
 	std::string input;
 	std::cout << " Please tell the number of Qubits you want to process: ";
@@ -71,19 +70,15 @@ int Checksystem::check() {
 			size = ((1ULL << qubit) * sizeof(std::complex<double>)) / Gb;
 		}
 	}
+	
 	std::cout << "The size is " << ((1ULL << qubit) * sizeof(std::complex<double>)) << "bytes" << std::endl;
 	return qubit;
 }
 
 void Checksystem::getsystem() {
-	std::cout << "Welcome to Quasim version 1.01" << std::endl;
+	std::cout << "Welcome to Quasim version 1.02" << std::endl;
 	SYSTEM_INFO info;
 	GetSystemInfo(&info);
-	DWORD buffersize = 0;
-	GetLogicalProcessorInformationEx(RelationCache, nullptr, &buffersize);
-	if (GetLastError() != ERROR_INSUFFICIENT_BUFFER) {
-		throw std::runtime_error("Failed to query CPU cache information");
-	}
 	std::cout << "NO. of logical cores  " << info.dwNumberOfProcessors << std::endl;
 	MEMORYSTATUSEX memory;
 	memory.dwLength = sizeof(MEMORYSTATUSEX);
