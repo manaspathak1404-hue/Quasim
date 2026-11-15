@@ -2,7 +2,7 @@
 void StateVector::PauliX() {
 	std::string name = "Qubit";
 	long long int Qubitnumber = ValidInput(qubit, name);
-
+	auto start = std::chrono::steady_clock::now();
 	if (Qubitnumber != -1) {
 		long long int mask = 1ULL << (Qubitnumber - 1);
 		long long int limit = 131072;
@@ -27,7 +27,9 @@ void StateVector::PauliX() {
 				}
 			}
 		}
-	
+		auto end = std::chrono::steady_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+		std::cout << "Execution time: " << duration.count() << " microseconds\n";
 		std::cout << "Pauli X applied successfully" << std::endl;
 	}
 	
@@ -211,10 +213,10 @@ std::complex<double> StateVector::GetAmp(){
 std::complex<double> StateVector::getcorrect() {
 	std::string input;
 	bool correct = false;
-
+	while (!correct) {
 	std::cout << "Please enter the value of amplitude" << std::endl;
 	std::getline(std::cin, input);
-	while (!correct) {
+	
 		while (Check(input) != true) {
 			std::cout << "You have entered a wrong input" << std::endl;
 			std::cout << "Please enter the value of amplitude" << std::endl;
