@@ -76,7 +76,7 @@ int Checksystem::check() {
 }
 
 void Checksystem::getsystem() {
-	std::cout << "Welcome to Quasim version 1.02" << std::endl;
+	std::cout << "Welcome to Quasim version 1.02.01" << std::endl;
 	SYSTEM_INFO info;
 	GetSystemInfo(&info);
 	std::cout << "NO. of logical cores  " << info.dwNumberOfProcessors << std::endl;
