@@ -1,34 +1,34 @@
+#pragma once
 #include <iostream>
 #include <complex>
 #include <vector>
 #include <charconv>
-#include <bitset>
 #include <cstdlib>
 #include <algorithm>
 #include <cctype>
-#include<omp.h>
 #include <Windows.h>
-#include <bit>
-#include <chrono>
 #include <optional>
-class StateVector{
-public:
+#include "Gates.h"
 
-	StateVector(long long int qubit);
-	std::pair<bool, std::optional<double>> Normalized();
-	const std::vector<std::complex<double>>& Amplitudes() const;
-	void PauliX();
-	long long int ValidInput(long long int number, const std::string& name);
-	std::string CheckInput();
-	void Ask();
-	void Modify();
-	std::complex<double> GetAmp();
-	std::complex<double>getcorrect();
-	void transfer(std::string& input);
-	bool Check(std::string& input);
-	void Iterate();
+class StateVector{ 
+public:
+    StateVector(uint64_t qubit);
+    std::pair<bool, std::optional<double>> Normalized();
+    std::vector<std::complex<double>>& Amplitudes();
+    std::complex<double> GetAmp();
+    std::complex<double>getcorrect();
+    bool Check(std::string& input);
+    void Ask();
+    void Modify();
+    void Iterate();
+  
+
 private:
-	long long int qubit;
-	std::vector<std::complex<double>>Amplitude;
-	long long int NumberOfAmplitudes;
+   
+    long long int qubit;
+    friend void Gates::PauliX(StateVector& state);
+    friend void Gates::Hadamard(StateVector& statint64_t, int64_t index);
+    friend void Gates::CNOT(StateVector& state,int64_t control, int64_t target);
+    std::vector<std::complex<double>>Amplitude;
+    uint64_t NumberOfAmplitudes;
 };
