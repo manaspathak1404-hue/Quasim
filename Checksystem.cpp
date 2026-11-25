@@ -1,3 +1,4 @@
+
 #include "Checksystem.h"
 
 std::string Checksystem::CheckInput() {
@@ -76,23 +77,34 @@ int Checksystem::check() {
 }
 
 void Checksystem::getsystem() {
-	std::cout << "Welcome to Quasim version 1.02.01" << std::endl;
+	std::cout << "Welcome to Quasim version 1.03" << std::endl;
 	SYSTEM_INFO info;
+	
+	
+	
 	GetSystemInfo(&info);
-	std::cout << "NO. of logical cores  " << info.dwNumberOfProcessors << std::endl;
-	MEMORYSTATUSEX memory;
-	memory.dwLength = sizeof(MEMORYSTATUSEX);
-	if (!GlobalMemoryStatusEx(&memory)) {
-		std::cout << "Reading failed, Exiting";
-		throw std::runtime_error("Memory reader failure");
+	if (info.dwNumberOfProcessors < 8) {
+		throw std::runtime_error("Minimum requirements not met exiting");
 	}
-	double storage = memory.ullAvailPhys;
-	std::cout << "Total Physical R.A.M: " << memory.ullTotalPhys / Gb << std::endl;
-	std::cout << "Total Available R.A.M: " << memory.ullAvailPhys / Gb << std::endl;
-	std::cout << " Occupied R.A.M: " << memory.ullTotalPhys / Gb - memory.ullAvailPhys / Gb << std::endl;
+	else {
 
-	int qubit = check();
-	this->qubit = qubit;
+		std::cout << "NO. of logical cores  " << info.dwNumberOfProcessors << std::endl;
+
+		MEMORYSTATUSEX memory;
+		memory.dwLength = sizeof(MEMORYSTATUSEX);
+		if (!GlobalMemoryStatusEx(&memory)) {
+			std::cout << "Reading failed, Exiting";
+			throw std::runtime_error("Memory reader failure");
+		}
+		
+		std::cout << "Total Physical R.A.M: " << memory.ullTotalPhys / Gb << std::endl;
+		std::cout << "Total Available R.A.M: " << memory.ullAvailPhys / Gb << std::endl;
+		std::cout << " Occupied R.A.M: " << memory.ullTotalPhys / Gb - memory.ullAvailPhys / Gb << std::endl;
+
+
+		int qubit = check();
+		this->qubit = qubit;
+	}
 
 
 }
