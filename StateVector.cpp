@@ -1,92 +1,129 @@
 #include "StateVector.h"
-void StateVector::PauliX() {
-	std::string name = "Qubit";
-	long long int Qubitnumber = ValidInput(qubit, name);
-	auto start = std::chrono::steady_clock::now();
-	if (Qubitnumber != -1) {
-		long long int mask = 1ULL << (Qubitnumber - 1);
-		long long int limit = 131072;
-		if (NumberOfAmplitudes > limit) {
-			
-#pragma omp parallel for proc_bind(spread) schedule(static)
-			for (long long int outer = 0; outer < Amplitude.size(); outer += (mask << 1)) {
-				for (long long int inner = 0; inner < mask; inner++) {
-					long long int idx0 = outer ^ inner;
-					long long int idx1 = idx0 ^ mask;
-					std::swap(Amplitude[idx0], Amplitude[idx1]);
-				}
-			}
-		}
-		else {
-
-			for (long long int outer = 0; outer < Amplitude.size(); outer += (mask << 1)) {
-				for (long long int inner = 0; inner < mask; inner++) {
-					long long int idx0 = outer ^ inner;
-					long long int idx1 = idx0 ^ mask;
-					std::swap(Amplitude[idx0], Amplitude[idx1]);
-				}
-			}
-		}
-		auto end = std::chrono::steady_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-		std::cout << "Execution time: " << duration.count() << " microseconds\n";
-		std::cout << "Pauli X applied successfully" << std::endl;
-	}
-	
-	
-	else{
-		std::cout << "Paused and exited" << std::endl;
-	}
-	
-	
-}
-
-void StateVector::Ask(){
+void StateVector::Ask() {
 	std::string ask;
 	std::cout << "Please enter the process you want to initiate" << std::endl;
-	std::cout << "The list of commands are:-" << std::endl << "1)Pauli X " << std::endl << "2)Enter Amplitudes" << std::endl << "3)close" << std::endl << "4)Print" << std::endl;
+	std::cout << "The list of commands are:-" << std::endl << "1)Pauli X " << std::endl << "2)Enter Amplitudes" << std::endl << "3)Hadamard" << std::endl << "4)Print" << std::endl << "5)CNOT" << std::endl << "6)Bell state" << std::endl << "7)Close" << std::endl;
 	std::getline(std::cin, ask);
-	transfer(ask);
-	if(ask =="paulix"){
-		
-		
-
-		PauliX();
-		
-
+	Input::transfer(ask);
+	if (ask == "paulix" || ask == "1" || ask == "01") {
+		Gates::PauliX(*this);
 	}
-	else if(ask == "close"){
-		std::cout << "Copyright[2026][Manas Pathak] " << std::endl <<  "All Rights Reserved." << std::endl;
+	else if (ask == "hadamardgate" || ask == "hadamard" || ask == "3" || ask == "03") {
+		std::string name = "qubit";
+		int64_t index = Input::ValidInput(qubit, name);
+		if (index == -1) {
+			std::cout << "Exited sucessfully" << std::endl;
+			return;
+		}
+		Gates::Hadamard(*this, index);
+		std::cout << "Hadamard gate applied correctly" << std::endl;
+	}
+	else if (ask == "close" || ask == "7" || ask == "07") {
+		std::cout << "Copyright[2026][Manas Pathak] " << std::endl << "All Rights Reserved." << std::endl;
 		std::exit(0);
 	}
-	else if(ask == "enteramplitudes" || ask == "modifyamplitudes" || ask == "enteramplitude" || ask=="modifyamplitude"){
+	else if (ask == "enteramplitudes" || ask == "modifyamplitudes" || ask == "enteramplitude" || ask == "modifyamplitude" || ask == "2" || ask == "02") {
 		Modify();
 	}
-	else if(ask == "printamplitude"|| ask=="printamplitudes"||ask=="print"){
-		
-		long long ind = ValidInput(NumberOfAmplitudes, "Amplitude");
-		if(ind == -1){
+	else if (ask == "printamplitude" || ask == "printamplitudes" || ask == "print" || ask == "4" || ask == "04") {
+
+		long long ind = Input::ValidInput(NumberOfAmplitudes, "Amplitude");
+		if (ind == -1) {
 			std::cout << "Exited" << std::endl;
 		}
 		else {
 			std::cout << Amplitude[ind - 1].real() << "+(" << Amplitude[ind - 1].imag() << ")i" << std::endl;
 		}
 	}
+	else if (ask == "cnot" || ask == "cnotgate" || ask == "05" || ask == "5") {
+		std::string name = "Target qubit";
+		int64_t target = 0;
+		target = Input::ValidInput(qubit, name);
+		if (target == -1) {
+			std::cout << "Exited successfully" << std::endl;
+			return;
+		}
+		name = "Control qubit";
+		int64_t control = 0;
+		if (control == -1) {
+			std::cout << "Exited successfully" << std::endl;
+			return;
+		}
+		control = Input::ValidInput(qubit, name);
+		while (control == target) {
+			std::cout << "invalid input" << std::endl;
+			name = "Target qubit";
+			target = 0;
+			target = Input::ValidInput(qubit, name);
+			if (target == -1) {
+				std::cout << "Exited successfully" << std::endl;
+				return;
+			}
+			name = "Control qubit";
+			control = 0;
+			control = Input::ValidInput(qubit, name);
+			if (control == -1) {
+				std::cout << "Exited successfully" << std::endl;
+				return;
+			}
+
+			break;
+
+		}
+		
+		Gates::CNOT(*this, control, target);
+		
+		std::cout << "CNOT applied succesfully" << std::endl;
+	}
+	else if (ask == "bellstate" || ask == "bell" || ask == "6" || ask == "06"){
+		std::string name = "Target qubit";
+		int64_t target = 0;
+		target = Input::ValidInput(qubit, name);
+		if (target == -1) {
+			std::cout << "Exited successfully" << std::endl;
+			return;
+		}
+		name = "Control qubit";
+		int64_t control = 0;
+		if (control == -1) {
+			std::cout << "Exited successfully" << std::endl;
+			return;
+		}
+		control = Input::ValidInput(qubit, name);
+		while (control == target) {
+			std::cout << "invalid input" << std::endl;
+			name = "Target qubit";
+			target = 0;
+			target = Input::ValidInput(qubit, name);
+			if (target == -1) {
+				std::cout << "Exited successfully" << std::endl;
+				return;
+			}
+			name = "Control qubit";
+			control = 0;
+			control = Input::ValidInput(qubit, name);
+			if (control == -1) {
+				std::cout << "Exited successfully" << std::endl;
+				return;
+			}
+
+			break;
+
+		}
+		auto start = std::chrono::steady_clock::now();
+		Gates::BellState(*this, target, control);
+		std::cout << "Bell State successfully applied" << std::endl;
+		auto end = std::chrono::steady_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+		std::cout << "Execution time: " << duration.count() << " microseconds\n";
+	}
 	else{
 		std::cout << "Please enter a valid task" << std::endl;
 	}
 
 }
-
-std::string StateVector::CheckInput() {
-
-	std::string input;
-	if (!std::getline(std::cin, input)) {
-		throw std::runtime_error("unexpected behavior");
-	}
-	return input;
-}
-StateVector::StateVector(long long int qubit) :
+StateVector::StateVector(uint64_t qubit) :
     qubit(qubit),
     Amplitude(1ULL << qubit, std::complex<double>(0.0, 0.0))
 
@@ -95,66 +132,11 @@ StateVector::StateVector(long long int qubit) :
 	Amplitude[0] = std::complex<double>(1.0, 0.0);
 	
 }
-long long int StateVector::ValidInput( long long int Num, const std:: string& name){
-	long long int value= 0;
-	std::string input;
-	std::cout << " Please tell address or number of " << name << std::endl;
-	input = CheckInput();
-	transfer(input);
-	if(input == "exit"){
-		return -1;
-	}
-	else {
-		auto result = std::from_chars(input.data(), input.data() + input.size(), value);
-		bool verif = false;
-
-		while (verif == false) {
-			if (result.ec != std::errc{} || result.ptr != input.data() + input.size()) {
-				std::cout << " Please enter a positive valid integer number of " << name << " and type exit to exit the function"<< std::endl;
-				input = CheckInput();
-			}
-			else if (value <= 0) {
-
-
-				std::cout << " Please enter positive value for number of " << name << std::endl;
-				input = CheckInput();
-
-
-			}
-			else if (value <= Num) {
-				verif = true;
-				break;
-			}
-
-			else {
-				std::cout << "Please enter a count of more than 0 till " << Num << std::endl;
-				input = CheckInput();
-			}
-			std::transform(input.begin(), input.end(), input.begin(), [](unsigned char c) {return std::tolower(c);});
-			input.erase(std::remove_if(input.begin(), input.end(), [](unsigned char c) {
-				return std::isspace(c);
-				}), input.end());
-			if(input == "exit"){
-				return -1;
-			}
-			else{
-				result = std::from_chars(input.data(), input.data() + input.size(), value);
-			}
-			
-		}
-
-		return value;
-	}
-	
-}
-
 std::pair<bool, std::optional<double>> StateVector::Normalized(){
     const double tolerance = 1e-12;
     double Normalization = 0;
-	
 #pragma omp parallel for simd reduction(+:Normalization) proc_bind(spread) 
-	
-	for(long long int i =0; i<NumberOfAmplitudes; ++i){
+	for(uint64_t i =0; i<NumberOfAmplitudes; ++i){
 		auto real = Amplitude[i].real();
 		auto imag = Amplitude[i].imag();
 		Normalization += (real * real) + (imag * imag);
@@ -169,9 +151,6 @@ std::pair<bool, std::optional<double>> StateVector::Normalized(){
 		return { false, Normalization };
 
 	}
-}
-const std::vector<std::complex<double>>& StateVector::Amplitudes() const{
-	return Amplitude;
 }
 void StateVector::Modify(){
 	std::cout << "Initiated the process The value of index 1 is 1+0i so you can now change it if interrupting normalization process and is based on 1 based index" << std::endl;
@@ -197,15 +176,12 @@ std::complex<double> StateVector::GetAmp(){
 		correct = getcorrect();
 		if(((correct.real()*correct.real()) + (correct.imag()*correct.imag())) >1){
 			std::cout << "You have entered a state disrupting normalization please try again" << std::endl;
-			
 		}
 		else if((correct.real() * correct.real()) > 1 && (correct.imag() * correct.imag()) > 1){
 			std::cout << "You have entered a state disrupting normalization please try again" << std::endl;
 		}
 		else{
 			cor = true;
-			
-			
 		}
 	}
 	return correct;
@@ -235,14 +211,11 @@ std::complex<double> StateVector::getcorrect() {
 		if (index == std::string::npos) {
 			auto result = std::from_chars(input.data(), input.data() + input.size(), value);
 			if (result.ec == std::errc() && result.ptr == input.data() + input.size()) {
-			
 				return std::complex<double>(value, 0);
 			}
 			else {
-			
 				std::cout << "Invalid Input" << std::endl;
 			}
-
 		}
 		else if (index == index2) {
 			if ((index != input.length() - 1 && (input[index + 1] == '+')) || (index != input.length() - 1 && (input[index + 1] == '-'))) {
@@ -250,17 +223,14 @@ std::complex<double> StateVector::getcorrect() {
 				auto sign = input.find_last_of('+') + 1;
 				if (sign == 0 || sign == std::string::npos) {
 					sign = input.find_last_of('-');
-
 				}
 
 				auto k = std::from_chars(input.data() + sign, input.data() + input.size(), real);
-				if (img_res.ec == std::errc{} && img_res.ptr == input.data() + index && k.ec == std::errc{} && k.ptr == input.data() + input.size()) {
-					
+				if (img_res.ec == std::errc{} && img_res.ptr == input.data() + index && k.ec == std::errc{} && k.ptr == input.data() + input.size()) {	
 					return std::complex<double>(real, img);
 				}
 				else {
 					std::cout << "Invalid input" << std::endl;
-					
 				}
 
 			}
@@ -339,31 +309,14 @@ std::complex<double> StateVector::getcorrect() {
 
 
 				}
-
-
-
-
-
-
 			}
-
-
 		}
-
-
 		std::cout << "Please enter valid input" << std::endl;
 	}
 
 }
-
-void StateVector::transfer(std::string& input){
-	std::transform(input.begin(), input.end(), input.begin(), [](unsigned char c) {return std::tolower(c);});
-	input.erase(std::remove_if(input.begin(), input.end(), [](unsigned char c) {
-		return std::isspace(c);
-		}), input.end());
-}
 bool StateVector::Check(std::string& input){
-	transfer(input);
+	Input::transfer(input);
 
 	
 	constexpr std::string_view ALLOWED = "0123456789i+-.";
@@ -379,9 +332,9 @@ bool StateVector::Check(std::string& input){
 }
 void StateVector::Iterate(){
 	std::string name = "amplitude";
-	long long int index = ValidInput(NumberOfAmplitudes, name);
+	uint64_t index = Input::ValidInput(NumberOfAmplitudes, name);
 	while (index != -1) {
 		Amplitude[index-1] = GetAmp();
-		index = ValidInput(NumberOfAmplitudes, name);
+		index = Input::ValidInput(NumberOfAmplitudes, name);
 	}
 }
